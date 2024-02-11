@@ -26,7 +26,7 @@ def index():
 
 @app.get('/push')
 def push_to_rmq():
-    channel.basic_publish(exchange='', routing_key='test', body="Hello There")
+    channel.basic_publish(exchange='', routing_key='auth', body="Hello There")
     
     return {"message": "Success"}
 
