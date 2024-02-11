@@ -9,7 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 # Setup RabbitMQ with pika
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost')) 
+connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq')) 
 channel = connection.channel()
 
 def get_db():
@@ -26,7 +26,7 @@ def index():
 
 @app.get('/push')
 def push_to_rmq():
-    channel.basic_publish(exchange='', routing_key='test', body="Hello")
+    channel.basic_publish(exchange='', routing_key='test', body="Hello There")
     
     return {"message": "Success"}
 

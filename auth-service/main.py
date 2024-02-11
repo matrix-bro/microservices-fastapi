@@ -18,7 +18,7 @@ def get_db():
 def index():
     return {"message": "Auth Home page"}
 
-@app.post("/create")
+@app.post("/create", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     user_exists = db.query(models.User).filter(models.User.email == user.email).first()
 
@@ -32,7 +32,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 
-@app.get("/users")
+@app.get("/users", response_model=list[schemas.User])
 def all_users(db:Session = Depends(get_db)):
     users = db.query(models.User).all()
 

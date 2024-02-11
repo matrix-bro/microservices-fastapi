@@ -5,8 +5,22 @@ version: '3.8'
 services:
   web:
     build: .
-    command: uvicorn main:app --host 0.0.0.0 --reload
+    command: bash -c 'while !</dev/tcp/rabbitmq/5672; do sleep 1; done; uvicorn main:app --host 0.0.0.0 --reload'
     volumes:
       - .:/app
     ports:
       - 8000:8000
+
+  queue:
+    build: .
+    command: bash -c 'while !</dev/tcp/rabbitmq/5672; do sleep 1; done; python consumer.py'
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    
