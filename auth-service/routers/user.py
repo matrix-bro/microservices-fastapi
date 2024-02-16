@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from sql import schemas, database, models
 from sqlalchemy.orm import Session
 from utils.hashing import Hash
+from typing import Annotated
+from utils.oauth2 import oauth2_scheme
 
 router = APIRouter(tags=['User'], prefix="/user")
 
@@ -19,7 +21,7 @@ def create_user(request: schemas.UserCreate, db: Session = Depends(database.get_
     return new_user
 
 @router.get("/all", response_model=list[schemas.User])
-def all_users(db:Session = Depends(database.get_db)):
+def all_users(token: Annotated[str, Depends(oauth2_scheme)], db:Session = Depends(database.get_db)):
     users = db.query(models.User).all()
 
     return users
